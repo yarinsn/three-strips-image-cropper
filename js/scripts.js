@@ -1,40 +1,48 @@
-	function readURL(input) {
+	function getLocalImage(input) {
 		if (input.files && input.files[0]) {	
-			var result = $("#result-img");
-			result.html("");
-			
 			var reader = new FileReader();
 
 			reader.onload = function (e) {
-				var image = new Image();
-				image.src = e.target.result;
-				
-				image.onload = function() {
-					var width = this.width;
-					var height = this.height;
-					
-					$('#img')
-						.attr('src', e.target.result)
-						.width(width)
-						.height(height);
-				}
+				var src = e.target.result;
+				initEditor(src);
 			};
 			reader.readAsDataURL(input.files[0]);
 		}
 	};
 
-	function getImage(){
+	function getImageFromUrl(){
+		var src = $("#url").val();
+		initEditor(src);
+	};
 	
+	function initEditor(src) {
+		clearResultArea();
+		
+		var editor = $("#editor");
+		editor.html("");
+		editor.append('<div id="img-container"><img id="img" src=""/></div>');
+		
+		var image = new Image();
+		image.src = src;
+		
+		image.onload = function() {
+			on_image_load(this);
+			
+			$('#img')
+				.attr('src', this.src)
+				.width(this.width)
+				.height(this.height);
+		};
+	}
+	
+	function clearResultArea() {
 		var result = $("#result-img");
 		result.html("");
-		
-		var img = $("#img");
-		img[0].src = $("#url").val();
-	};
+		result.append('<canvas id="res-canvas" style="border:1px solid #000000; display:none;"></canvas>');
+	}
 	
 	function cropImage(){
 		var width = $('#img').width();
-		var height = $('#img').height();
 		var src = $('#img')[0].src;
 		
 		var topHeight = $('#draggable-top').height();
@@ -46,9 +54,8 @@
 		
 		var totalHeight = topHeight + middleHeight + bottomHeight;
 		
-		var result = $("#result-img");
-		result.html("");
-		result.append('<canvas id="res-canvas" style="border:1px solid #000000;"></canvas>');
+		clearResultArea();
+		$('#res-canvas').css('display', 'initial');
 		
 		var canvas = $('#res-canvas')[0];
 		init_canvas(canvas, width, totalHeight);
@@ -74,42 +81,43 @@
 		strip.src = src;
 	};
 	
-	$('#img').load(function () {
-		var width = $(this).width();
-		var height = $(this).height();
+	on_image_load = function (e) {
+		var width = e.width;
+		var height = e.height;
 		
-		var container = $("#container");
-		container.width(width);
-		container.height(height);
-		container.append('<div id="draggable-top">Top</div>');
-		container.append('<div id="draggable-middle">Middle</div>');
-		container.append('<div id="draggable-bottom">Bottom</div>');	
+		var editor = $("#editor");
+		editor.width(width);
+		editor.height(height);
+		editor.append('<div id="draggable-top">Top</div><div id="draggable-middle">Middle</div><div id="draggable-bottom">Bottom</div>');
 		
-		var lh = height / 2;
-		$('#draggable-middle').css('bottom', lh + 'px');
+		var top = $('#draggable-top');
+		var middle = $('#draggable-middle');
+		var bottom = $('#draggable-bottom');
 		
-		$('#draggable-top').css('width', width + 'px');
-		$('#draggable-middle').css('width', width + 'px');
-		$('#draggable-bottom').css('width', width + 'px');
+		middle.css('bottom', height / 2 + 'px');
 		
-		$( "#draggable-top" ).resizable({
+		top.css('width', width + 'px');
+		middle.css('width', width + 'px');
+		bottom.css('width', width + 'px');
+		
+		top.resizable({
 			 maxHeight: height,
 			 maxWidth: width,
 			 minHeight: 20,
 			 minWidth: width,
 		}).draggable({ axis: "y", containment: "parent" });
 	
-		$( "#draggable-middle" ).resizable({
+		middle.resizable({
 			 maxHeight: height,
 			 maxWidth: width,
 			 minHeight: 20,
 			 minWidth: width,
 		}).draggable({ axis: "y", containment: "parent" });
 	
-		$( "#draggable-bottom" ).resizable({
+		bottom.resizable({
 			 maxHeight: height,
 			 maxWidth: width,
 			 minHeight: 20,
 			 minWidth: width,
 		}).draggable({ axis: "y", containment: "parent" });
-	});
+	};

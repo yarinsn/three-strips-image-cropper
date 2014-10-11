@@ -35,3 +35,7 @@
 #res-bot { 
 	background-repeat: no-repeat; 
 }
+
+#img-container {
+	position: absolute;
+}
