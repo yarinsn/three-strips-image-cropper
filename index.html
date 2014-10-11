@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css">
+		<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+		
+	</head>
+	<body>
+		<div><input type='file' onchange="readURL(this);" /></div>
+		<div>Or</div>
+		<span>Url:</span>
+		<input id="url" value="http://images1.ynet.co.il/PicServer4/2014/10/10/5631704/563170301000100396220.jpg"></input>
+		<button onClick="getImage()">Get image</button>
+		<div><button onClick="cropImage()">Crop</button></div>
+		<div id="container" style="position : relative;">
+			<div style="position: absolute;">
+				<img id="img" src=""/>
+			</div>
+		</div>
+		
+		<div>Result</div>
+		<div id="result-img">
+		</div>
+	</body>
+</html>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="/js/scripts.js" type="text/javascript" ></script>
